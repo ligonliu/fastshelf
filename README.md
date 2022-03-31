@@ -1,11 +1,11 @@
-# shelf
+# fastshelf
 
 high performance persistent python3 dict with choices of backend
 
 ## Usage Example
 
 ```
-from shelf import Shelf
+from fastshelf import Shelf
 import dbm.gnu
 path = "/tmp/shelf1.gnudb"
 shelf1 = Shelf(dbm.gnu.open(path,'cf'))
@@ -37,7 +37,7 @@ print(shelf2[3]) #output 9
 
 ## Usage
 
-Shelf is a dict-like wrapper, that can use any python objects as key and value.
+Shelf class of package fastshelf is a dict-like wrapper, that can use any python objects as key and value.
 
 Shelf handles the serialization and deserialization of python objects.
 

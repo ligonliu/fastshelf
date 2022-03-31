@@ -3,10 +3,11 @@
 
 import os
 import shutil
+import dbm.gnu
 
-import shelf, dbm.gnu
-from PlyvelDB import PlyvelDB
-from RocksDB import RocksDB
+from src import fastshelf
+from src.PlyvelDB import PlyvelDB
+from src.RocksDB import RocksDB
 
 class Dog:
     def __init__(self):
@@ -16,7 +17,7 @@ def test_trackchange():
     path = '/tmp/test.db'
     if os.path.exists(path):
         shutil.rmtree(path)
-    dogshelf = shelf.Shelf(RocksDB(path),track_value_changes=True)
+    dogshelf = fastshelf.Shelf(RocksDB(path),track_value_changes=True)
     for i in range(0,100):
         dog_i = Dog()
         dog_i.number = i
@@ -30,7 +31,7 @@ def test_trackchange():
 
     dogshelf.close()
 
-    dogshelf = shelf.Shelf(RocksDB(path),track_value_changes=True)
+    dogshelf = fastshelf.Shelf(RocksDB(path),track_value_changes=True)
 
     if list(dogshelf[i].number for i in range(0,100)) == list(100-i for i in range(0,100)):
         print('test_trackchange passed')
@@ -99,7 +100,7 @@ def test_speed():
         clean_up()
 
         with measure('Write: rocksdb N=%d' % n):
-            my_db = shelf.Shelf(RocksDB(rocksdb_dir))
+            my_db = fastshelf.Shelf(RocksDB(rocksdb_dir))
             for k, v in kv_gen(length=n):
                 my_db[k] = v
             my_db.close()
@@ -114,18 +115,18 @@ def test_speed():
         #shutil.rmtree(rocksdb_dir)
 
         with measure('Write: rocksdb batch N=%d' % n):
-            my_db = shelf.Shelf(RocksDB(rocksdb_dir, sync=True))
+            my_db = fastshelf.Shelf(RocksDB(rocksdb_dir, sync=True))
             my_db.update((k,v) for k, v in kv_gen(length=n))
             my_db.close()
 
         with measure('Read: rocksdb N=%d' % n):
-            my_db = shelf.Shelf(RocksDB(rocksdb_dir))
+            my_db = fastshelf.Shelf(RocksDB(rocksdb_dir))
             for key in keys_gen(length=n):
                 v = my_db[key]
             # my_db.close()
 
         with measure('Write: dbm(gnudb) fast mode N=%d' % n):
-            my_db = shelf.Shelf(dbm.gnu.open(dbm_f,'cf'))
+            my_db = fastshelf.Shelf(dbm.gnu.open(dbm_f,'cf'))
             for k, v in kv_gen(length=n):
                 my_db[k]=v
             my_db.close()
@@ -133,19 +134,19 @@ def test_speed():
         os.remove(dbm_f)
 
         with measure('Write: dbm(gnudb) sync mode N=%d' % n):
-            my_db = shelf.Shelf(dbm.gnu.open(dbm_f,'cs'))
+            my_db = fastshelf.Shelf(dbm.gnu.open(dbm_f,'cs'))
             for k, v in kv_gen(length=n):
                 my_db[k]=v
             my_db.close()
 
         with measure('Read: dbm(gnudb) N=%d' % n):
-            my_db = shelf.Shelf(dbm.gnu.open(dbm_f,'r'))
+            my_db = fastshelf.Shelf(dbm.gnu.open(dbm_f,'r'))
             for key in keys_gen(length=n):
                 v=my_db[key]
             my_db.close()
 
         with measure('Write: plyvel N=%d' % n):
-            my_db = shelf.Shelf(PlyvelDB(plyveldb_dir))
+            my_db = fastshelf.Shelf(PlyvelDB(plyveldb_dir))
             for k, v in kv_gen(length=n):
                 my_db[k]=v
             my_db.close()
@@ -161,12 +162,12 @@ def test_speed():
         #plyvel.destroy_db(plyveldb_dir)
 
         with measure('Write: plyvel batch N=%d' % n):
-            my_db = shelf.Shelf(PlyvelDB(plyveldb_dir,sync=True))
+            my_db = fastshelf.Shelf(PlyvelDB(plyveldb_dir,sync=True))
             my_db.update((k,v) for k, v in kv_gen(length=n))
             my_db.close()
 
         with measure('Read: plyvel N=%d' % n):
-            my_db = shelf.Shelf(PlyvelDB(plyveldb_dir))
+            my_db = fastshelf.Shelf(PlyvelDB(plyveldb_dir))
             for key in keys_gen(length=n):
                 v = my_db[key]
             # my_db.close()

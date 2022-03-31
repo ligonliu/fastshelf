@@ -1,4 +1,4 @@
-from shelf import Shelf
+from src.fastshelf import Shelf
 import dbm.gnu
 shelf1 = Shelf(dbm.gnu.open("/tmp/shelf1.gnudb",'cf'))
 
