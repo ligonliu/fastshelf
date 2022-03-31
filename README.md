@@ -1,6 +1,6 @@
 # shelf
 
-high performance persistent python dict with choices of backend
+high performance persistent python3 dict with choices of backend
 
 ## Usage Example
 
@@ -37,12 +37,12 @@ print(shelf2[3]) #output 9
 
 ## Usage
 
-Shelf is a dict-like wrapper, that can use any python object as key and value.
+Shelf is a dict-like wrapper, that can use any python objects as key and value.
 
 Shelf handles the serialization and deserialization of python objects.
 
 Shelf object initializes with arguments:
-* backend: a dbm-like key-value storage database with "bytes" key and value, options include python's own gnudb, PlyvelDB(via plyvel) and RocksDB(via lbry-rocksdb) or your own bytes-based key/value store
+* backend: a dbm-like key-value storage database with "bytes" key and value, options include python3's own gnudb, PlyvelDB(via plyvel) and RocksDB(via lbry-rocksdb) or your own bytes-based key/value store
 * serializer: a pickle-like serialization library, by default "pickle", which you can replace with dill/msgpack/bson/json
 * track_value_changes: if True, enable **experimental** feature of tracking and writing back value object changes, to maintain similar new style object reference semantics with dict
 
